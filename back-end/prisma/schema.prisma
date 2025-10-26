@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+  binaryTargets = ["native", "windows", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Categoria {
+  idCategoria   Int          @id @default(autoincrement())
+  nomeCategoria String
+  iniciativas   Iniciativa[]
+}
+
+model Instituicao {
+  idInstituicao   Int          @id @default(autoincrement())
+  nomeInstituicao String
+  site            String?
+  iniciativas     Iniciativa[]
+}
+
+model Iniciativa {
+  idIniciativa  Int         @id @default(autoincrement())
+  titulo        String
+  descricao     String
+  dataCadastro  DateTime    @default(now())
+  categoriaId   Int
+  instituicaoId Int
+  categoria     Categoria   @relation(fields: [categoriaId], references: [idCategoria])
+  instituicao   Instituicao @relation(fields: [instituicaoId], references: [idInstituicao])
+}
